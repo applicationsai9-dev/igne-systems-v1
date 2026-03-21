@@ -280,7 +280,36 @@ svg { display: block; }
 .hero__content {
   position: relative;
   z-index: 1;
-  max-width: 920px;
+  display: flex;
+  align-items: center;
+  gap: clamp(2rem, 5vw, 5rem);
+  max-width: 1200px;
+}
+
+.hero__text {
+  flex: 1;
+  min-width: 0;
+}
+
+.hero__robot {
+  flex: 0 0 clamp(180px, 22vw, 280px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  pointer-events: none;
+  opacity: 0;
+}
+
+.robot-svg {
+  width: 100%;
+  height: auto;
+  animation: robotFloat 4s ease-in-out infinite;
+  filter: drop-shadow(0 0 28px rgba(0, 222, 236, 0.18));
+}
+
+@keyframes robotFloat {
+  0%, 100% { transform: translateY(0px); }
+  50%       { transform: translateY(-14px); }
 }
 
 .hero__label {
@@ -1009,6 +1038,7 @@ svg { display: block; }
 
   .hero__cta { flex-direction: column; align-items: flex-start; }
   .hero__cta .btn { width: fit-content; }
+  .hero__robot { display: none; }
 
   .process-step { gap: 1.5rem; }
 

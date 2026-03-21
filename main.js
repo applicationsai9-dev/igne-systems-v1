@@ -33,6 +33,7 @@ document.addEventListener('DOMContentLoaded', () => {
   initSmoothAnchorLinks()
   initCursor()
   initHero()
+  initRobot()
   initNav()
   initServices()
   initBentoSpotlight()
@@ -150,7 +151,7 @@ function initCursor() {
 // ========================
 function initHero() {
   if (prefersReducedMotion) {
-    gsap.set(['.hero__label', '.hero__sub', '.hero__cta', '.hero__scroll-hint'], { opacity: 1 })
+    gsap.set(['.hero__label', '.hero__sub', '.hero__cta', '.hero__scroll-hint', '.hero__robot'], { opacity: 1 })
     gsap.set('.hero__line', { y: '0%' })
     return
   }
@@ -183,6 +184,11 @@ function initHero() {
     { opacity: 0 },
     { opacity: 1, duration: 0.6 },
     '-=0.3'
+  )
+  .fromTo('.hero__robot',
+    { x: 40, opacity: 0 },
+    { x: 0, opacity: 1, duration: 1.0, ease: 'power3.out' },
+    0.3
   )
 
   // Orb parallax on scroll
@@ -411,6 +417,54 @@ function initSectionHeads() {
         }
       }
     )
+  })
+}
+
+// ========================
+// ROBOT — CURSOR EYE TRACKING
+// ========================
+function initRobot() {
+  const leftPupil  = document.getElementById('robotLeftPupil')
+  const rightPupil = document.getElementById('robotRightPupil')
+  const robotSvg   = document.querySelector('.robot-svg')
+  if (!leftPupil || !rightPupil || !robotSvg || prefersReducedMotion) return
+
+  const eyes = [
+    { el: leftPupil,  bx: 73,  by: 76 },
+    { el: rightPupil, bx: 127, by: 76 },
+  ]
+
+  const MAX_TRAVEL = 4.5
+
+  document.addEventListener('mousemove', e => {
+    const rect = robotSvg.getBoundingClientRect()
+    if (rect.width === 0) return
+
+    const scaleX = 200 / rect.width
+    const scaleY = 300 / rect.height
+
+    eyes.forEach(({ el, bx, by }) => {
+      const svgCursorX = (e.clientX - rect.left) * scaleX
+      const svgCursorY = (e.clientY - rect.top)  * scaleY
+
+      const dx    = svgCursorX - bx
+      const dy    = svgCursorY - by
+      const angle = Math.atan2(dy, dx)
+      const dist  = Math.min(Math.hypot(dx, dy), MAX_TRAVEL)
+
+      gsap.to(el, {
+        attr: { cx: bx + Math.cos(angle) * dist, cy: by + Math.sin(angle) * dist },
+        duration: 0.25,
+        ease: 'power2.out',
+        overwrite: 'auto',
+      })
+    })
+  })
+
+  document.addEventListener('mouseleave', () => {
+    eyes.forEach(({ el, bx, by }) => {
+      gsap.to(el, { attr: { cx: bx, cy: by }, duration: 0.6, ease: 'elastic.out(1,0.5)' })
+    })
   })
 }
 
