@@ -1,0 +1,423 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AI Automations | Axiom Systems</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../styles.css">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    .cap-nav {
+      position: fixed; top: 0; left: 0; right: 0;
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 1.25rem 2.5rem;
+      background: rgba(14,14,15,0.85); backdrop-filter: blur(16px);
+      z-index: 100; border-bottom: 1px solid var(--outline);
+    }
+    .cap-back {
+      display: flex; align-items: center; gap: 0.5rem;
+      color: var(--text-muted); text-decoration: none; font-size: 0.875rem;
+      font-family: var(--font-body); transition: color 0.2s;
+    }
+    .cap-back:hover { color: var(--cyan); }
+    .cap-badge { color: rgba(143,245,255,0.5); font-size: 0.72rem; letter-spacing: 0.1em; }
+
+    .cap-hero {
+      padding: 9rem 2.5rem 3rem; max-width: 860px; margin: 0 auto;
+      opacity: 0; transform: translateY(24px);
+    }
+    .cap-title {
+      font-family: var(--font-display); font-weight: 700;
+      font-size: clamp(3rem, 7vw, 5.5rem);
+      letter-spacing: -0.03em; line-height: 1;
+      margin: 0.75rem 0 1.5rem;
+    }
+    .cap-hook { font-size: 1.15rem; color: var(--text-muted); max-width: 560px; line-height: 1.7; }
+
+    /* ── BEFORE / AFTER VISUAL ── */
+    .cap-visual {
+      max-width: 860px; margin: 1rem auto 0;
+      padding: 0 2.5rem 4rem; opacity: 0;
+    }
+
+    .ba-grid {
+      display: grid; grid-template-columns: 1fr 1fr;
+      gap: 1.5rem;
+    }
+
+    .ba-col { border-radius: 12px; overflow: hidden; border: 1px solid var(--outline); }
+    .ba-col--before { border-color: rgba(255,255,255,0.06); }
+    .ba-col--after  { border-color: rgba(143,245,255,0.2); }
+
+    .ba-col__head {
+      padding: 1rem 1.5rem; border-bottom: 1px solid var(--outline);
+      display: flex; align-items: center; justify-content: space-between;
+    }
+    .ba-col--before .ba-col__head { background: rgba(255,255,255,0.02); }
+    .ba-col--after  .ba-col__head { background: rgba(143,245,255,0.04); }
+
+    .ba-col__title {
+      font-family: var(--font-display); font-weight: 700; font-size: 0.9rem;
+    }
+    .ba-col--before .ba-col__title { color: rgba(255,255,255,0.4); }
+    .ba-col--after  .ba-col__title { color: var(--cyan); }
+
+    .ba-col__time {
+      font-family: var(--font-display); font-weight: 700; font-size: 0.8rem;
+    }
+    .ba-col--before .ba-col__time { color: rgba(255,100,100,0.7); }
+    .ba-col--after  .ba-col__time { color: var(--cyan); }
+
+    .ba-col__steps { padding: 1.5rem; display: flex; flex-direction: column; gap: 0; }
+
+    .ba-step {
+      display: flex; align-items: flex-start; gap: 0.85rem;
+      padding: 0.75rem 0;
+      border-bottom: 1px solid rgba(255,255,255,0.04);
+      position: relative;
+    }
+    .ba-step:last-child { border-bottom: none; }
+
+    .ba-step__icon {
+      width: 30px; height: 30px; border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      flex-shrink: 0;
+    }
+    .ba-col--before .ba-step__icon { background: rgba(255,255,255,0.05); }
+    .ba-col--after  .ba-step__icon { background: rgba(143,245,255,0.08); }
+
+    .ba-step__icon svg { width: 14px; height: 14px; }
+    .ba-col--before .ba-step__icon svg { color: rgba(255,255,255,0.3); }
+    .ba-col--after  .ba-step__icon svg { color: var(--cyan); }
+
+    .ba-step__text { flex: 1; padding-top: 0.2rem; }
+    .ba-step__label {
+      font-size: 0.85rem; font-weight: 500;
+      margin-bottom: 0.2rem;
+    }
+    .ba-col--before .ba-step__label { color: var(--text-muted); }
+    .ba-col--after  .ba-step__label { color: var(--text); }
+
+    .ba-step__time {
+      font-size: 0.72rem; font-family: var(--font-display); font-weight: 600;
+    }
+    .ba-col--before .ba-step__time { color: rgba(255,100,100,0.6); }
+    .ba-col--after  .ba-step__time { color: rgba(143,245,255,0.5); }
+
+    .ba-result {
+      margin: 1rem 1.5rem 1.5rem;
+      padding: 0.85rem 1rem; border-radius: 8px;
+      display: flex; align-items: center; justify-content: space-between;
+    }
+    .ba-col--before .ba-result {
+      background: rgba(255,80,80,0.06); border: 1px solid rgba(255,80,80,0.15);
+    }
+    .ba-col--after .ba-result {
+      background: rgba(143,245,255,0.05); border: 1px solid rgba(143,245,255,0.2);
+    }
+    .ba-result__label { font-size: 0.8rem; color: var(--text-muted); }
+    .ba-result__val {
+      font-family: var(--font-display); font-weight: 700; font-size: 1rem;
+    }
+    .ba-col--before .ba-result__val { color: rgba(255,100,100,0.8); }
+    .ba-col--after  .ba-result__val { color: var(--cyan); }
+
+    /* Use cases strip */
+    .use-cases {
+      margin-top: 2rem; padding: 1.5rem;
+      border: 1px solid var(--outline); border-radius: 12px;
+      background: rgba(255,255,255,0.01);
+    }
+    .use-cases__label {
+      font-size: 0.72rem; letter-spacing: 0.08em; color: var(--text-muted);
+      font-family: var(--font-display); font-weight: 600;
+      margin-bottom: 1rem;
+    }
+    .use-cases__list { display: flex; flex-wrap: wrap; gap: 0.6rem; }
+    .use-case-chip {
+      padding: 0.4rem 0.85rem; border-radius: 20px;
+      background: rgba(143,245,255,0.06); border: 1px solid rgba(143,245,255,0.12);
+      font-size: 0.8rem; color: rgba(143,245,255,0.7);
+      font-family: var(--font-display);
+    }
+
+    /* ── SECTIONS ── */
+    .cap-section {
+      max-width: 860px; margin: 0 auto; padding: 4rem 2.5rem; opacity: 0;
+    }
+    .cap-section-label {
+      font-family: var(--font-display); font-size: 0.72rem;
+      letter-spacing: 0.1em; color: rgba(143,245,255,0.5); margin-bottom: 2.5rem;
+    }
+    .cap-points { display: flex; flex-direction: column; gap: 2.25rem; }
+    .cap-point { display: flex; gap: 1.75rem; align-items: flex-start; }
+    .cap-point__num {
+      font-family: var(--font-display); font-size: 0.7rem; font-weight: 700;
+      color: var(--cyan); width: 28px; flex-shrink: 0; padding-top: 3px;
+    }
+    .cap-point h4 {
+      font-family: var(--font-display); font-size: 1.05rem;
+      font-weight: 600; color: var(--text); margin-bottom: 0.4rem;
+    }
+    .cap-point p { font-size: 0.9375rem; color: var(--text-muted); line-height: 1.7; }
+
+    .cap-outcomes-grid { display: flex; flex-wrap: wrap; gap: 0.6rem; }
+    .cap-outcome {
+      display: flex; align-items: center; gap: 0.5rem;
+      background: rgba(255,255,255,0.03); border: 1px solid var(--outline);
+      border-radius: 6px; padding: 0.55rem 1rem;
+      font-size: 0.85rem; color: var(--text-muted);
+    }
+    .cap-outcome svg { color: var(--cyan); flex-shrink: 0; }
+
+    .divider { height: 1px; background: var(--outline); max-width: 860px; margin: 0 auto; }
+
+    .cap-cta-wrap {
+      text-align: center; max-width: 520px; margin: 0 auto;
+      padding: 5rem 2.5rem 7rem; opacity: 0;
+    }
+    .cap-cta-wrap h2 {
+      font-family: var(--font-display); font-size: clamp(1.8rem, 4vw, 2.6rem);
+      font-weight: 700; margin-bottom: 1rem;
+    }
+    .cap-cta-wrap p { color: var(--text-muted); margin-bottom: 2rem; }
+
+    @media (max-width: 640px) {
+      .ba-grid { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+  <nav class="cap-nav">
+    <a href="../index.html" class="cap-back">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="15 18 9 12 15 6"/></svg>
+      Axiom Systems
+    </a>
+    <span class="cap-badge">Capability 03</span>
+  </nav>
+
+  <section class="cap-hero">
+    <p class="label" style="color:rgba(143,245,255,0.5)">AI Automations</p>
+    <h1 class="cap-title">The work that<br>eats your day —<br><span class="text-gradient">automated.</span></h1>
+    <p class="cap-hook">Every business has tasks that happen on repeat: emails, follow-ups, data entry, reports. AI can handle all of it — instantly, accurately, and without anyone lifting a finger.</p>
+  </section>
+
+  <!-- VISUAL: BEFORE vs AFTER -->
+  <div class="cap-visual">
+    <div class="ba-grid">
+
+      <!-- BEFORE -->
+      <div class="ba-col ba-col--before">
+        <div class="ba-col__head">
+          <span class="ba-col__title">Without Automation</span>
+          <span class="ba-col__time">~3 hours/day</span>
+        </div>
+        <div class="ba-col__steps">
+          <div class="ba-step">
+            <div class="ba-step__icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+            </div>
+            <div class="ba-step__text">
+              <div class="ba-step__label">Lead arrives via form</div>
+              <div class="ba-step__time">Sits unseen for hours</div>
+            </div>
+          </div>
+          <div class="ba-step">
+            <div class="ba-step__icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+            </div>
+            <div class="ba-step__text">
+              <div class="ba-step__label">Someone reviews it manually</div>
+              <div class="ba-step__time">20–30 min to assess</div>
+            </div>
+          </div>
+          <div class="ba-step">
+            <div class="ba-step__icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+            </div>
+            <div class="ba-step__text">
+              <div class="ba-step__label">Email written and sent</div>
+              <div class="ba-step__time">15 min to compose</div>
+            </div>
+          </div>
+          <div class="ba-step">
+            <div class="ba-step__icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/></svg>
+            </div>
+            <div class="ba-step__text">
+              <div class="ba-step__label">CRM updated manually</div>
+              <div class="ba-step__time">Likely forgotten</div>
+            </div>
+          </div>
+          <div class="ba-step">
+            <div class="ba-step__icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+            </div>
+            <div class="ba-step__text">
+              <div class="ba-step__label">Follow-up scheduled manually</div>
+              <div class="ba-step__time">Often missed</div>
+            </div>
+          </div>
+        </div>
+        <div class="ba-result">
+          <span class="ba-result__label">Total daily cost</span>
+          <span class="ba-result__val">Hours of human time</span>
+        </div>
+      </div>
+
+      <!-- AFTER -->
+      <div class="ba-col ba-col--after">
+        <div class="ba-col__head">
+          <span class="ba-col__title">With AI Automation</span>
+          <span class="ba-col__time">~30 seconds</span>
+        </div>
+        <div class="ba-col__steps">
+          <div class="ba-step">
+            <div class="ba-step__icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+            </div>
+            <div class="ba-step__text">
+              <div class="ba-step__label">Lead arrives via form</div>
+              <div class="ba-step__time">Instantly detected</div>
+            </div>
+          </div>
+          <div class="ba-step">
+            <div class="ba-step__icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 7V5a2 2 0 0 0-4 0v2"/></svg>
+            </div>
+            <div class="ba-step__text">
+              <div class="ba-step__label">AI qualifies &amp; scores lead</div>
+              <div class="ba-step__time">Automatic — 2 seconds</div>
+            </div>
+          </div>
+          <div class="ba-step">
+            <div class="ba-step__icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+            </div>
+            <div class="ba-step__text">
+              <div class="ba-step__label">Personalised email sent</div>
+              <div class="ba-step__time">Automatic — immediate</div>
+            </div>
+          </div>
+          <div class="ba-step">
+            <div class="ba-step__icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/></svg>
+            </div>
+            <div class="ba-step__text">
+              <div class="ba-step__label">CRM updated automatically</div>
+              <div class="ba-step__time">Always accurate</div>
+            </div>
+          </div>
+          <div class="ba-step">
+            <div class="ba-step__icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+            </div>
+            <div class="ba-step__text">
+              <div class="ba-step__label">Follow-up sequence triggered</div>
+              <div class="ba-step__time">Never missed</div>
+            </div>
+          </div>
+        </div>
+        <div class="ba-result">
+          <span class="ba-result__label">Total daily cost</span>
+          <span class="ba-result__val">0 hours of human time</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Use cases -->
+    <div class="use-cases">
+      <div class="use-cases__label">WHAT WE AUTOMATE</div>
+      <div class="use-cases__list">
+        <span class="use-case-chip">Lead qualification</span>
+        <span class="use-case-chip">Email follow-up sequences</span>
+        <span class="use-case-chip">Invoice processing</span>
+        <span class="use-case-chip">Customer support responses</span>
+        <span class="use-case-chip">Report generation</span>
+        <span class="use-case-chip">CRM data entry</span>
+        <span class="use-case-chip">Document analysis</span>
+        <span class="use-case-chip">Appointment scheduling</span>
+        <span class="use-case-chip">Social media posting</span>
+        <span class="use-case-chip">Data scraping &amp; enrichment</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="divider"></div>
+
+  <section class="cap-section">
+    <p class="cap-section-label">How it works</p>
+    <div class="cap-points">
+      <div class="cap-point">
+        <span class="cap-point__num">01</span>
+        <div>
+          <h4>We map what your team does on repeat</h4>
+          <p>We start by auditing your workflows — the daily tasks that eat time but don't require creativity or judgement. These are the highest-value automation targets.</p>
+        </div>
+      </div>
+      <div class="cap-point">
+        <span class="cap-point__num">02</span>
+        <div>
+          <h4>We build the automation, end-to-end</h4>
+          <p>Using AI models, APIs, and workflow tools, we build systems that handle the task completely — from trigger to outcome. No half-measures. It either works fully or we don't ship it.</p>
+        </div>
+      </div>
+      <div class="cap-point">
+        <span class="cap-point__num">03</span>
+        <div>
+          <h4>You scale without hiring</h4>
+          <p>The automation runs 24/7 without sick days, errors, or overtime. As your business grows, the system handles more volume at zero additional cost. That's the compounding value of automation done right.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div class="divider"></div>
+
+  <section class="cap-section">
+    <p class="cap-section-label">What you get</p>
+    <div class="cap-outcomes-grid">
+      <div class="cap-outcome"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polyline points="20 6 9 17 4 12"/></svg>Workflow audit &amp; automation map</div>
+      <div class="cap-outcome"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polyline points="20 6 9 17 4 12"/></svg>Custom AI pipeline built to your process</div>
+      <div class="cap-outcome"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polyline points="20 6 9 17 4 12"/></svg>CRM &amp; tool integrations</div>
+      <div class="cap-outcome"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polyline points="20 6 9 17 4 12"/></svg>Testing &amp; monitoring built in</div>
+      <div class="cap-outcome"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polyline points="20 6 9 17 4 12"/></svg>Handover &amp; documentation</div>
+      <div class="cap-outcome"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polyline points="20 6 9 17 4 12"/></svg>Ongoing support &amp; iteration</div>
+    </div>
+  </section>
+
+  <div class="cap-cta-wrap">
+    <h2>What's eating<br>your team's time?</h2>
+    <p>Tell us about your most repetitive process and we'll show you how to automate it.</p>
+    <a href="../index.html#contact" class="btn">Book a Call</a>
+  </div>
+
+  <script src="https://unpkg.com/lenis@1.1.20/dist/lenis.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+  <script>
+    const lenis = new Lenis({ duration: 1.2, smooth: true, smoothTouch: false })
+    gsap.registerPlugin(ScrollTrigger)
+    lenis.on('scroll', ScrollTrigger.update)
+    gsap.ticker.add(t => lenis.raf(t * 1000))
+    gsap.ticker.lagSmoothing(0, 0)
+
+    gsap.to('.cap-hero', { opacity: 1, y: 0, duration: 0.9, ease: 'power3.out', delay: 0.1 })
+    gsap.to('.cap-visual', { opacity: 1, duration: 0.8, ease: 'power2.out', delay: 0.3 })
+
+    gsap.utils.toArray('.cap-section').forEach(el => {
+      gsap.to(el, { opacity: 1, duration: 0.7, ease: 'power3.out',
+        scrollTrigger: { trigger: el, start: 'top 84%' }
+      })
+    })
+    gsap.to('.cap-cta-wrap', { opacity: 1, duration: 0.7,
+      scrollTrigger: { trigger: '.cap-cta-wrap', start: 'top 85%' }
+    })
+  </script>
+</body>
+</html>

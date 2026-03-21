@@ -1,0 +1,418 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SEO & Google Ads | Axiom Systems</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../styles.css">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    .cap-nav {
+      position: fixed; top: 0; left: 0; right: 0;
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 1.25rem 2.5rem;
+      background: rgba(14,14,15,0.85); backdrop-filter: blur(16px);
+      z-index: 100; border-bottom: 1px solid var(--outline);
+    }
+    .cap-back {
+      display: flex; align-items: center; gap: 0.5rem;
+      color: var(--text-muted); text-decoration: none; font-size: 0.875rem;
+      font-family: var(--font-body); transition: color 0.2s;
+    }
+    .cap-back:hover { color: var(--blue); }
+    .cap-badge { color: rgba(102,157,255,0.6); font-size: 0.72rem; letter-spacing: 0.1em; }
+
+    .cap-hero {
+      padding: 9rem 2.5rem 3rem; max-width: 860px; margin: 0 auto;
+      opacity: 0; transform: translateY(24px);
+    }
+    .cap-title {
+      font-family: var(--font-display); font-weight: 700;
+      font-size: clamp(3rem, 7vw, 5.5rem);
+      letter-spacing: -0.03em; line-height: 1;
+      margin: 0.75rem 0 1.5rem;
+    }
+    .cap-hook { font-size: 1.15rem; color: var(--text-muted); max-width: 560px; line-height: 1.7; }
+
+    /* ── SEARCH VISUAL ── */
+    .cap-visual {
+      max-width: 860px; margin: 1rem auto 0;
+      padding: 0 2.5rem 4rem; opacity: 0;
+    }
+
+    .search-split {
+      display: grid; grid-template-columns: 1fr 1fr;
+      gap: 1.5rem;
+    }
+
+    .search-col {
+      border: 1px solid var(--outline); border-radius: 12px;
+      overflow: hidden;
+    }
+    .search-col--organic { border-color: rgba(143,245,255,0.2); }
+    .search-col--paid    { border-color: rgba(102,157,255,0.2); }
+
+    .search-col__head {
+      padding: 1.25rem 1.5rem;
+      border-bottom: 1px solid var(--outline);
+      display: flex; align-items: center; justify-content: space-between;
+    }
+    .search-col--organic .search-col__head { background: rgba(143,245,255,0.04); }
+    .search-col--paid    .search-col__head { background: rgba(102,157,255,0.04); }
+
+    .search-col__name {
+      font-family: var(--font-display); font-weight: 700;
+      font-size: 0.95rem;
+    }
+    .search-col--organic .search-col__name { color: var(--cyan); }
+    .search-col--paid    .search-col__name { color: var(--blue); }
+
+    .search-col__pill {
+      font-size: 0.7rem; letter-spacing: 0.06em;
+      padding: 0.25rem 0.65rem; border-radius: 20px;
+      font-family: var(--font-display); font-weight: 600;
+    }
+    .search-col--organic .search-col__pill {
+      background: rgba(143,245,255,0.1); color: rgba(143,245,255,0.7);
+    }
+    .search-col--paid .search-col__pill {
+      background: rgba(102,157,255,0.1); color: rgba(102,157,255,0.7);
+    }
+
+    .search-col__body { padding: 1.5rem; }
+
+    .search-result {
+      padding: 0.85rem 1rem; border-radius: 8px;
+      margin-bottom: 0.6rem; background: rgba(255,255,255,0.02);
+      border: 1px solid rgba(255,255,255,0.05);
+    }
+    .search-result:last-child { margin-bottom: 0; }
+    .search-result__label {
+      font-size: 0.68rem; letter-spacing: 0.06em;
+      font-family: var(--font-display); font-weight: 600;
+      margin-bottom: 0.3rem;
+    }
+    .search-col--paid .search-result:first-child .search-result__label { color: rgba(102,157,255,0.7); }
+    .search-col--paid .search-result:first-child {
+      border-color: rgba(102,157,255,0.18); background: rgba(102,157,255,0.05);
+    }
+    .search-col--organic .search-result:first-child .search-result__label { color: rgba(143,245,255,0.7); }
+    .search-col--organic .search-result:first-child {
+      border-color: rgba(143,245,255,0.18); background: rgba(143,245,255,0.05);
+    }
+    .search-result__url { font-size: 0.72rem; color: rgba(200,200,220,0.3); margin-bottom: 0.25rem; }
+    .search-result__title { font-size: 0.875rem; color: var(--text); line-height: 1.4; }
+
+    .search-col__stats {
+      margin-top: 1.25rem; padding-top: 1.25rem;
+      border-top: 1px solid var(--outline);
+      display: flex; flex-direction: column; gap: 0.6rem;
+    }
+    .stat-row {
+      display: flex; align-items: center; justify-content: space-between;
+      font-size: 0.83rem;
+    }
+    .stat-row__key { color: var(--text-muted); }
+    .stat-row__val {
+      font-family: var(--font-display); font-weight: 600; font-size: 0.83rem;
+    }
+    .search-col--organic .stat-row__val { color: var(--cyan); }
+    .search-col--paid    .stat-row__val { color: var(--blue); }
+
+    /* Timeline bar */
+    .timeline-wrap { margin-top: 2.5rem; }
+    .timeline-label {
+      font-size: 0.8rem; color: var(--text-muted); margin-bottom: 0.75rem;
+      text-align: center; font-family: var(--font-display);
+    }
+    .timeline {
+      display: grid; grid-template-columns: repeat(6, 1fr);
+      gap: 6px; align-items: end;
+    }
+    .timeline__col { display: flex; flex-direction: column; align-items: center; gap: 6px; }
+    .timeline__month { font-size: 0.65rem; color: var(--text-muted); }
+    .timeline__bars { width: 100%; display: flex; gap: 3px; height: 60px; align-items: flex-end; }
+    .timeline__bar {
+      flex: 1; border-radius: 3px 3px 0 0;
+      transition: height 0.3s ease;
+    }
+    .timeline__bar--organic { background: linear-gradient(to top, rgba(143,245,255,0.6), rgba(143,245,255,0.2)); }
+    .timeline__bar--paid    { background: linear-gradient(to top, rgba(102,157,255,0.5), rgba(102,157,255,0.15)); }
+
+    /* ── SECTIONS ── */
+    .cap-section {
+      max-width: 860px; margin: 0 auto; padding: 4rem 2.5rem; opacity: 0;
+    }
+    .cap-section-label {
+      font-family: var(--font-display); font-size: 0.72rem;
+      letter-spacing: 0.1em; text-transform: uppercase;
+      color: rgba(102,157,255,0.6); margin-bottom: 2.5rem;
+    }
+    .cap-points { display: flex; flex-direction: column; gap: 2.25rem; }
+    .cap-point { display: flex; gap: 1.75rem; align-items: flex-start; }
+    .cap-point__num {
+      font-family: var(--font-display); font-size: 0.7rem; font-weight: 700;
+      color: var(--blue); width: 28px; flex-shrink: 0; padding-top: 3px;
+    }
+    .cap-point h4 {
+      font-family: var(--font-display); font-size: 1.05rem;
+      font-weight: 600; color: var(--text); margin-bottom: 0.4rem;
+    }
+    .cap-point p { font-size: 0.9375rem; color: var(--text-muted); line-height: 1.7; }
+
+    .cap-outcomes-grid { display: flex; flex-wrap: wrap; gap: 0.6rem; }
+    .cap-outcome {
+      display: flex; align-items: center; gap: 0.5rem;
+      background: rgba(255,255,255,0.03); border: 1px solid var(--outline);
+      border-radius: 6px; padding: 0.55rem 1rem;
+      font-size: 0.85rem; color: var(--text-muted);
+    }
+    .cap-outcome svg { color: var(--blue); flex-shrink: 0; }
+
+    .divider { height: 1px; background: var(--outline); max-width: 860px; margin: 0 auto; }
+
+    .cap-cta-wrap {
+      text-align: center; max-width: 520px; margin: 0 auto;
+      padding: 5rem 2.5rem 7rem; opacity: 0;
+    }
+    .cap-cta-wrap h2 {
+      font-family: var(--font-display); font-size: clamp(1.8rem, 4vw, 2.6rem);
+      font-weight: 700; margin-bottom: 1rem;
+    }
+    .cap-cta-wrap p { color: var(--text-muted); margin-bottom: 2rem; }
+
+    .btn--blue {
+      background: linear-gradient(135deg, rgba(102,157,255,0.15), rgba(102,157,255,0.05));
+      border: 1px solid rgba(102,157,255,0.35); color: var(--blue);
+    }
+    .btn--blue:hover { background: rgba(102,157,255,0.2); }
+
+    @media (max-width: 640px) {
+      .search-split { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+  <nav class="cap-nav">
+    <a href="../index.html" class="cap-back">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="15 18 9 12 15 6"/></svg>
+      Axiom Systems
+    </a>
+    <span class="cap-badge">Capability 02</span>
+  </nav>
+
+  <section class="cap-hero">
+    <p class="label" style="color:rgba(102,157,255,0.6)">SEO &amp; Google Ads</p>
+    <h1 class="cap-title">Be the first<br>thing they<br><span style="background:linear-gradient(135deg,#669dff,#8ff5ff);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;">see.</span></h1>
+    <p class="cap-hook">When someone searches for what you offer, you want to appear at the top — every time. SEO builds that position over months. Ads get you there today.</p>
+  </section>
+
+  <!-- VISUAL: TWO CHANNELS SIDE BY SIDE -->
+  <div class="cap-visual">
+    <div class="search-split">
+
+      <!-- Organic -->
+      <div class="search-col search-col--organic">
+        <div class="search-col__head">
+          <span class="search-col__name">Organic Search (SEO)</span>
+          <span class="search-col__pill">FREE PER CLICK</span>
+        </div>
+        <div class="search-col__body">
+          <div class="search-result">
+            <div class="search-result__label">YOUR BUSINESS</div>
+            <div class="search-result__url">yourbusiness.com › services</div>
+            <div class="search-result__title">Best AI Agency in Dublin — Axiom Systems</div>
+          </div>
+          <div class="search-result">
+            <div class="search-result__url">competitor-a.com</div>
+            <div class="search-result__title">Competitor A — Web Agency</div>
+          </div>
+          <div class="search-result">
+            <div class="search-result__url">competitor-b.com</div>
+            <div class="search-result__title">Competitor B — Digital Services</div>
+          </div>
+
+          <div class="search-col__stats">
+            <div class="stat-row">
+              <span class="stat-row__key">Time to results</span>
+              <span class="stat-row__val">3 – 6 months</span>
+            </div>
+            <div class="stat-row">
+              <span class="stat-row__key">Cost per click</span>
+              <span class="stat-row__val">€0</span>
+            </div>
+            <div class="stat-row">
+              <span class="stat-row__key">Runs forever?</span>
+              <span class="stat-row__val">Yes — compounds</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Paid -->
+      <div class="search-col search-col--paid">
+        <div class="search-col__head">
+          <span class="search-col__name">Google Ads (Paid)</span>
+          <span class="search-col__pill">INSTANT</span>
+        </div>
+        <div class="search-col__body">
+          <div class="search-result">
+            <div class="search-result__label">AD — YOUR BUSINESS</div>
+            <div class="search-result__url">yourbusiness.com</div>
+            <div class="search-result__title">AI Agency Ireland — Book a Free Call Today</div>
+          </div>
+          <div class="search-result">
+            <div class="search-result__url">competitor-a.com</div>
+            <div class="search-result__title">Competitor A — Web Design</div>
+          </div>
+          <div class="search-result">
+            <div class="search-result__url">competitor-b.com</div>
+            <div class="search-result__title">Competitor B — Digital Agency</div>
+          </div>
+
+          <div class="search-col__stats">
+            <div class="stat-row">
+              <span class="stat-row__key">Time to results</span>
+              <span class="stat-row__val">24 – 48 hours</span>
+            </div>
+            <div class="stat-row">
+              <span class="stat-row__key">Cost per click</span>
+              <span class="stat-row__val">Managed budget</span>
+            </div>
+            <div class="stat-row">
+              <span class="stat-row__key">Precision targeting?</span>
+              <span class="stat-row__val">Yes — by intent</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Timeline -->
+    <div class="timeline-wrap">
+      <p class="timeline-label">Combined traffic over time — Paid gives you momentum, SEO makes it permanent</p>
+      <div class="timeline">
+        <div class="timeline__col">
+          <div class="timeline__bars">
+            <div class="timeline__bar timeline__bar--paid" style="height:48px"></div>
+            <div class="timeline__bar timeline__bar--organic" style="height:6px"></div>
+          </div>
+          <span class="timeline__month">Month 1</span>
+        </div>
+        <div class="timeline__col">
+          <div class="timeline__bars">
+            <div class="timeline__bar timeline__bar--paid" style="height:50px"></div>
+            <div class="timeline__bar timeline__bar--organic" style="height:12px"></div>
+          </div>
+          <span class="timeline__month">Month 2</span>
+        </div>
+        <div class="timeline__col">
+          <div class="timeline__bars">
+            <div class="timeline__bar timeline__bar--paid" style="height:50px"></div>
+            <div class="timeline__bar timeline__bar--organic" style="height:24px"></div>
+          </div>
+          <span class="timeline__month">Month 3</span>
+        </div>
+        <div class="timeline__col">
+          <div class="timeline__bars">
+            <div class="timeline__bar timeline__bar--paid" style="height:50px"></div>
+            <div class="timeline__bar timeline__bar--organic" style="height:38px"></div>
+          </div>
+          <span class="timeline__month">Month 4</span>
+        </div>
+        <div class="timeline__col">
+          <div class="timeline__bars">
+            <div class="timeline__bar timeline__bar--paid" style="height:50px"></div>
+            <div class="timeline__bar timeline__bar--organic" style="height:50px"></div>
+          </div>
+          <span class="timeline__month">Month 5</span>
+        </div>
+        <div class="timeline__col">
+          <div class="timeline__bars">
+            <div class="timeline__bar timeline__bar--paid" style="height:50px"></div>
+            <div class="timeline__bar timeline__bar--organic" style="height:60px"></div>
+          </div>
+          <span class="timeline__month">Month 6+</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="divider"></div>
+
+  <section class="cap-section">
+    <p class="cap-section-label">How it works</p>
+    <div class="cap-points">
+      <div class="cap-point">
+        <span class="cap-point__num">01</span>
+        <div>
+          <h4>We audit what's already there</h4>
+          <p>Before spending a euro on ads or writing a single piece of content, we analyse your site's technical health, current rankings, and search landscape. This tells us exactly where the opportunity is.</p>
+        </div>
+      </div>
+      <div class="cap-point">
+        <span class="cap-point__num">02</span>
+        <div>
+          <h4>SEO: earning long-term visibility</h4>
+          <p>We fix technical issues, optimise your content for the right keywords, and build the authority signals Google uses to rank sites. Organic traffic compounds — the longer you invest, the more you get for free.</p>
+        </div>
+      </div>
+      <div class="cap-point">
+        <span class="cap-point__num">03</span>
+        <div>
+          <h4>Ads: precision targeting from day one</h4>
+          <p>We build and manage Google Ad campaigns targeted at people actively searching for what you sell. Every euro is tracked to a conversion, and we continuously optimise to bring the cost per customer down over time.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div class="divider"></div>
+
+  <section class="cap-section">
+    <p class="cap-section-label">What you get</p>
+    <div class="cap-outcomes-grid">
+      <div class="cap-outcome"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polyline points="20 6 9 17 4 12"/></svg>Full technical SEO audit</div>
+      <div class="cap-outcome"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polyline points="20 6 9 17 4 12"/></svg>Keyword research &amp; strategy</div>
+      <div class="cap-outcome"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polyline points="20 6 9 17 4 12"/></svg>On-page content optimisation</div>
+      <div class="cap-outcome"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polyline points="20 6 9 17 4 12"/></svg>Google Ads campaign setup &amp; management</div>
+      <div class="cap-outcome"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polyline points="20 6 9 17 4 12"/></svg>Conversion tracking &amp; reporting</div>
+      <div class="cap-outcome"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polyline points="20 6 9 17 4 12"/></svg>Monthly performance reports</div>
+    </div>
+  </section>
+
+  <div class="cap-cta-wrap">
+    <h2>Want more eyes<br>on your business?</h2>
+    <p>Tell us where you want to rank and we'll show you exactly how to get there.</p>
+    <a href="../index.html#contact" class="btn">Book a Call</a>
+  </div>
+
+  <script src="https://unpkg.com/lenis@1.1.20/dist/lenis.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+  <script>
+    const lenis = new Lenis({ duration: 1.2, smooth: true, smoothTouch: false })
+    gsap.registerPlugin(ScrollTrigger)
+    lenis.on('scroll', ScrollTrigger.update)
+    gsap.ticker.add(t => lenis.raf(t * 1000))
+    gsap.ticker.lagSmoothing(0, 0)
+
+    gsap.to('.cap-hero', { opacity: 1, y: 0, duration: 0.9, ease: 'power3.out', delay: 0.1 })
+    gsap.to('.cap-visual', { opacity: 1, duration: 0.8, ease: 'power2.out', delay: 0.3 })
+
+    gsap.utils.toArray('.cap-section').forEach(el => {
+      gsap.to(el, { opacity: 1, duration: 0.7, ease: 'power3.out',
+        scrollTrigger: { trigger: el, start: 'top 84%' }
+      })
+    })
+    gsap.to('.cap-cta-wrap', { opacity: 1, duration: 0.7,
+      scrollTrigger: { trigger: '.cap-cta-wrap', start: 'top 85%' }
+    })
+  </script>
+</body>
+</html>

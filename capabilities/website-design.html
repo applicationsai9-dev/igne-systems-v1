@@ -1,0 +1,369 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Website Design & Build | Axiom Systems</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../styles.css">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    .cap-nav {
+      position: fixed; top: 0; left: 0; right: 0;
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 1.25rem 2.5rem;
+      background: rgba(14,14,15,0.85); backdrop-filter: blur(16px);
+      z-index: 100; border-bottom: 1px solid var(--outline);
+    }
+    .cap-back {
+      display: flex; align-items: center; gap: 0.5rem;
+      color: var(--text-muted); text-decoration: none; font-size: 0.875rem;
+      font-family: var(--font-body); transition: color 0.2s;
+    }
+    .cap-back:hover { color: var(--cyan); }
+    .cap-badge {
+      color: rgba(143,245,255,0.5);
+      font-size: 0.72rem; letter-spacing: 0.1em;
+    }
+
+    .cap-hero {
+      padding: 9rem 2.5rem 3rem;
+      max-width: 860px; margin: 0 auto;
+      opacity: 0; transform: translateY(24px);
+    }
+    .cap-title {
+      font-family: var(--font-display); font-weight: 700;
+      font-size: clamp(3rem, 7vw, 5.5rem);
+      letter-spacing: -0.03em; line-height: 1;
+      margin: 0.75rem 0 1.5rem;
+    }
+    .cap-hook {
+      font-size: 1.15rem; color: var(--text-muted);
+      max-width: 560px; line-height: 1.7;
+    }
+
+    /* ── ANATOMY INFOGRAPHIC ── */
+    .cap-visual {
+      max-width: 980px; margin: 1rem auto 0;
+      padding: 0 2.5rem 4rem;
+      opacity: 0;
+    }
+    .anatomy {
+      display: grid; grid-template-columns: 1fr 340px;
+      gap: 3rem; align-items: start;
+    }
+    .anatomy__browser {
+      background: rgba(20,20,22,0.8);
+      border: 1px solid rgba(255,255,255,0.07);
+      border-radius: 12px; overflow: hidden;
+    }
+    .anatomy__bar {
+      background: rgba(255,255,255,0.04);
+      border-bottom: 1px solid rgba(255,255,255,0.05);
+      padding: 0.7rem 1rem;
+      display: flex; align-items: center; gap: 0.75rem;
+    }
+    .anatomy__dots { display: flex; gap: 6px; }
+    .anatomy__dots span {
+      width: 10px; height: 10px; border-radius: 50%;
+      background: rgba(255,255,255,0.08);
+    }
+    .anatomy__dots span:nth-child(1) { background: rgba(255,95,87,0.5); }
+    .anatomy__dots span:nth-child(2) { background: rgba(255,189,46,0.5); }
+    .anatomy__dots span:nth-child(3) { background: rgba(39,201,63,0.5); }
+    .anatomy__url {
+      font-size: 0.72rem; color: rgba(255,255,255,0.25);
+      font-family: var(--font-mono, monospace);
+      background: rgba(255,255,255,0.04);
+      padding: 0.3rem 0.75rem; border-radius: 4px;
+    }
+
+    .anatomy__section {
+      padding: 1.25rem 1.5rem;
+      border-bottom: 1px solid rgba(255,255,255,0.04);
+      position: relative;
+    }
+    .anatomy__section:last-child { border-bottom: none; }
+
+    .anatomy__section--hero { padding: 1.75rem 1.5rem; }
+    .anatomy__hl {
+      height: 10px; border-radius: 3px;
+      background: rgba(143,245,255,0.35); width: 65%; margin-bottom: 8px;
+    }
+    .anatomy__hl.sm {
+      height: 7px; background: rgba(143,245,255,0.15); width: 45%; margin-bottom: 14px;
+    }
+    .anatomy__btn-mock {
+      display: inline-block; height: 26px; width: 96px; border-radius: 5px;
+      background: rgba(143,245,255,0.18); border: 1px solid rgba(143,245,255,0.35);
+    }
+
+    .anatomy__section--proof { background: rgba(255,255,255,0.015); }
+    .anatomy__logos { display: flex; gap: 10px; }
+    .anatomy__logo-mock {
+      height: 18px; border-radius: 3px; flex: 1;
+      background: rgba(255,255,255,0.08);
+    }
+
+    .anatomy__section--services { padding: 1.25rem 1.5rem; }
+    .anatomy__cards-mock { display: grid; grid-template-columns: repeat(3,1fr); gap: 8px; }
+    .anatomy__card-mock {
+      height: 52px; border-radius: 6px;
+      background: rgba(102,157,255,0.07);
+      border: 1px solid rgba(102,157,255,0.15);
+    }
+
+    .anatomy__section--cta {
+      text-align: center; padding: 1.5rem;
+      background: rgba(143,245,255,0.03);
+    }
+    .anatomy__cta-mock {
+      display: inline-block; height: 30px; width: 140px;
+      border-radius: 6px;
+      background: rgba(143,245,255,0.2);
+      border: 1px solid rgba(143,245,255,0.4);
+    }
+
+    /* Annotations */
+    .anatomy__annotations {
+      display: flex; flex-direction: column; gap: 0;
+    }
+    .anatomy__annotation {
+      display: flex; flex-direction: column;
+      padding: 1.25rem 0;
+      border-bottom: 1px solid var(--outline);
+    }
+    .anatomy__annotation:first-child { padding-top: 0.5rem; }
+    .anatomy__annotation:last-child { border-bottom: none; }
+    .annotation-num {
+      font-family: var(--font-display); font-size: 0.7rem;
+      font-weight: 700; color: var(--cyan); letter-spacing: 0.08em;
+      margin-bottom: 0.35rem;
+    }
+    .annotation-title {
+      font-family: var(--font-display); font-weight: 600;
+      font-size: 1rem; color: var(--text); margin-bottom: 0.3rem;
+    }
+    .annotation-body {
+      font-size: 0.875rem; color: var(--text-muted); line-height: 1.55;
+    }
+
+    /* ── HOW IT WORKS ── */
+    .cap-section {
+      max-width: 860px; margin: 0 auto; padding: 4rem 2.5rem;
+      opacity: 0;
+    }
+    .cap-section + .cap-section { padding-top: 0; }
+    .cap-section-label {
+      font-family: var(--font-display); font-size: 0.72rem;
+      letter-spacing: 0.1em; text-transform: uppercase;
+      color: rgba(143,245,255,0.5); margin-bottom: 2.5rem;
+    }
+    .cap-points { display: flex; flex-direction: column; gap: 2.25rem; }
+    .cap-point { display: flex; gap: 1.75rem; align-items: flex-start; }
+    .cap-point__num {
+      font-family: var(--font-display); font-size: 0.7rem;
+      font-weight: 700; color: var(--cyan);
+      width: 28px; flex-shrink: 0; padding-top: 3px;
+    }
+    .cap-point h4 {
+      font-family: var(--font-display); font-size: 1.05rem;
+      font-weight: 600; color: var(--text); margin-bottom: 0.4rem;
+    }
+    .cap-point p { font-size: 0.9375rem; color: var(--text-muted); line-height: 1.7; }
+
+    /* ── OUTCOMES ── */
+    .cap-outcomes-grid {
+      display: flex; flex-wrap: wrap; gap: 0.6rem; margin-top: 0;
+    }
+    .cap-outcome {
+      display: flex; align-items: center; gap: 0.5rem;
+      background: rgba(255,255,255,0.03);
+      border: 1px solid var(--outline);
+      border-radius: 6px; padding: 0.55rem 1rem;
+      font-size: 0.85rem; color: var(--text-muted);
+    }
+    .cap-outcome svg { color: var(--cyan); flex-shrink: 0; }
+
+    /* ── CTA ── */
+    .cap-cta-wrap {
+      text-align: center; max-width: 520px; margin: 0 auto;
+      padding: 5rem 2.5rem 7rem;
+      opacity: 0;
+    }
+    .cap-cta-wrap h2 {
+      font-family: var(--font-display); font-size: clamp(1.8rem, 4vw, 2.6rem);
+      font-weight: 700; margin-bottom: 1rem;
+    }
+    .cap-cta-wrap p { color: var(--text-muted); margin-bottom: 2rem; font-size: 1rem; }
+
+    .divider { height: 1px; background: var(--outline); max-width: 860px; margin: 0 auto; }
+
+    @media (max-width: 768px) {
+      .anatomy { grid-template-columns: 1fr; }
+      .anatomy__annotations { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+      .anatomy__annotation { border-bottom: none; padding: 1rem; background: rgba(255,255,255,0.02); border-radius: 8px; border: 1px solid var(--outline); }
+      .cap-nav { padding: 1rem 1.25rem; }
+    }
+  </style>
+</head>
+<body>
+
+  <nav class="cap-nav">
+    <a href="../index.html" class="cap-back">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="15 18 9 12 15 6"/></svg>
+      Axiom Systems
+    </a>
+    <span class="cap-badge">Capability 01</span>
+  </nav>
+
+  <!-- HERO -->
+  <section class="cap-hero">
+    <p class="label" style="color:rgba(143,245,255,0.5)">Website Design &amp; Build</p>
+    <h1 class="cap-title">Your website<br>works while<br><span class="text-gradient">you sleep.</span></h1>
+    <p class="cap-hook">Most websites look fine. The best ones are engineered to convert — every section, every word, every interaction working together to turn visitors into customers.</p>
+  </section>
+
+  <!-- VISUAL: ANATOMY OF A CONVERTING WEBSITE -->
+  <div class="cap-visual">
+    <div class="anatomy">
+      <div class="anatomy__browser">
+        <div class="anatomy__bar">
+          <div class="anatomy__dots"><span></span><span></span><span></span></div>
+          <div class="anatomy__url">your-business.com</div>
+        </div>
+
+        <div class="anatomy__section anatomy__section--hero">
+          <div class="anatomy__hl"></div>
+          <div class="anatomy__hl sm"></div>
+          <div class="anatomy__btn-mock"></div>
+        </div>
+
+        <div class="anatomy__section anatomy__section--proof">
+          <div class="anatomy__logos">
+            <div class="anatomy__logo-mock"></div>
+            <div class="anatomy__logo-mock"></div>
+            <div class="anatomy__logo-mock"></div>
+            <div class="anatomy__logo-mock"></div>
+          </div>
+        </div>
+
+        <div class="anatomy__section anatomy__section--services">
+          <div class="anatomy__cards-mock">
+            <div class="anatomy__card-mock"></div>
+            <div class="anatomy__card-mock"></div>
+            <div class="anatomy__card-mock"></div>
+          </div>
+        </div>
+
+        <div class="anatomy__section anatomy__section--cta">
+          <div class="anatomy__cta-mock"></div>
+        </div>
+      </div>
+
+      <div class="anatomy__annotations">
+        <div class="anatomy__annotation">
+          <span class="annotation-num">01 — HERO</span>
+          <span class="annotation-title">The first impression</span>
+          <span class="annotation-body">You have 3 seconds. The headline, visual, and CTA must immediately communicate value and invite action.</span>
+        </div>
+        <div class="anatomy__annotation">
+          <span class="annotation-num">02 — PROOF</span>
+          <span class="annotation-title">Build instant trust</span>
+          <span class="annotation-body">Logos, stats, and social proof remove doubt before it forms. People buy from businesses other people trust.</span>
+        </div>
+        <div class="anatomy__annotation">
+          <span class="annotation-num">03 — SERVICES</span>
+          <span class="annotation-title">Explain your value</span>
+          <span class="annotation-body">What you do, who it's for, why it matters. Clear, benefit-led copy that speaks the customer's language.</span>
+        </div>
+        <div class="anatomy__annotation">
+          <span class="annotation-num">04 — CTA</span>
+          <span class="annotation-title">Make the ask easy</span>
+          <span class="annotation-body">One clear next step. No friction, no confusion. A well-placed CTA is the difference between a visitor and a lead.</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="divider"></div>
+
+  <!-- HOW IT WORKS -->
+  <section class="cap-section">
+    <p class="cap-section-label">How it works</p>
+    <div class="cap-points">
+      <div class="cap-point">
+        <span class="cap-point__num">01</span>
+        <div>
+          <h4>We start with your goals, not a template</h4>
+          <p>Before anything is designed, we understand your business, your customers, and what success looks like. Every decision — layout, copy, colour — is made in service of one thing: converting visitors into customers.</p>
+        </div>
+      </div>
+      <div class="cap-point">
+        <span class="cap-point__num">02</span>
+        <div>
+          <h4>Built for performance from the ground up</h4>
+          <p>Your site loads fast, ranks on Google, and works flawlessly on every screen. No bloated page builders, no slow themes. Clean code, optimised assets, and a 90+ performance score.</p>
+        </div>
+      </div>
+      <div class="cap-point">
+        <span class="cap-point__num">03</span>
+        <div>
+          <h4>Design that earns trust before words are read</h4>
+          <p>The visual quality of your site is a signal. A premium site tells your customer: this business takes itself seriously. We engineer that feeling with layout, motion, and typography that match your brand's actual quality.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div class="divider"></div>
+
+  <!-- WHAT YOU GET -->
+  <section class="cap-section">
+    <p class="cap-section-label">What you get</p>
+    <div class="cap-outcomes-grid">
+      <div class="cap-outcome"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polyline points="20 6 9 17 4 12"/></svg>100% custom design — no templates</div>
+      <div class="cap-outcome"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polyline points="20 6 9 17 4 12"/></svg>Mobile-first &amp; fully responsive</div>
+      <div class="cap-outcome"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polyline points="20 6 9 17 4 12"/></svg>Performance score 90+</div>
+      <div class="cap-outcome"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polyline points="20 6 9 17 4 12"/></svg>SEO structure built in from day one</div>
+      <div class="cap-outcome"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polyline points="20 6 9 17 4 12"/></svg>Smooth scroll &amp; animation</div>
+      <div class="cap-outcome"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polyline points="20 6 9 17 4 12"/></svg>Copy-ready or we write it with you</div>
+      <div class="cap-outcome"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polyline points="20 6 9 17 4 12"/></svg>Handoff or ongoing support</div>
+    </div>
+  </section>
+
+  <!-- CTA -->
+  <div class="cap-cta-wrap">
+    <h2>Ready to build<br>something real?</h2>
+    <p>Tell us about your business and we'll get back to you within 24 hours.</p>
+    <a href="../index.html#contact" class="btn">Book a Call</a>
+  </div>
+
+  <script src="https://unpkg.com/lenis@1.1.20/dist/lenis.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+  <script>
+    const lenis = new Lenis({ duration: 1.2, smooth: true, smoothTouch: false })
+    gsap.registerPlugin(ScrollTrigger)
+    lenis.on('scroll', ScrollTrigger.update)
+    gsap.ticker.add(t => lenis.raf(t * 1000))
+    gsap.ticker.lagSmoothing(0, 0)
+
+    gsap.to('.cap-hero', { opacity: 1, y: 0, duration: 0.9, ease: 'power3.out', delay: 0.1 })
+    gsap.to('.cap-visual', { opacity: 1, duration: 0.8, ease: 'power2.out', delay: 0.3 })
+
+    gsap.utils.toArray('.cap-section').forEach(el => {
+      gsap.to(el, { opacity: 1, y: 0, duration: 0.7, ease: 'power3.out',
+        scrollTrigger: { trigger: el, start: 'top 84%' }
+      })
+    })
+
+    gsap.to('.cap-cta-wrap', { opacity: 1, duration: 0.7, ease: 'power2.out',
+      scrollTrigger: { trigger: '.cap-cta-wrap', start: 'top 85%' }
+    })
+  </script>
+</body>
+</html>

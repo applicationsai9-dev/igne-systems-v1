@@ -1,0 +1,385 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Customer Intelligence | Axiom Systems</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../styles.css">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    .cap-nav {
+      position: fixed; top: 0; left: 0; right: 0;
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 1.25rem 2.5rem;
+      background: rgba(14,14,15,0.85); backdrop-filter: blur(16px);
+      z-index: 100; border-bottom: 1px solid var(--outline);
+    }
+    .cap-back {
+      display: flex; align-items: center; gap: 0.5rem;
+      color: var(--text-muted); text-decoration: none; font-size: 0.875rem;
+      font-family: var(--font-body); transition: color 0.2s;
+    }
+    .cap-back:hover { color: var(--blue); }
+    .cap-badge { color: rgba(102,157,255,0.6); font-size: 0.72rem; letter-spacing: 0.1em; }
+
+    .cap-hero {
+      padding: 9rem 2.5rem 3rem; max-width: 860px; margin: 0 auto;
+      opacity: 0; transform: translateY(24px);
+    }
+    .cap-title {
+      font-family: var(--font-display); font-weight: 700;
+      font-size: clamp(3rem, 7vw, 5.5rem);
+      letter-spacing: -0.03em; line-height: 1;
+      margin: 0.75rem 0 1.5rem;
+    }
+    .cap-hook { font-size: 1.15rem; color: var(--text-muted); max-width: 560px; line-height: 1.7; }
+
+    /* ── DATA FLOW VISUAL ── */
+    .cap-visual {
+      max-width: 860px; margin: 1rem auto 0;
+      padding: 0 2.5rem 4rem; opacity: 0;
+    }
+
+    .flow {
+      display: grid;
+      grid-template-columns: 1fr 56px 1fr 56px 1fr;
+      align-items: center; gap: 0;
+    }
+
+    /* Column: Data Sources */
+    .flow-col { display: flex; flex-direction: column; gap: 0.75rem; }
+
+    .flow-source {
+      padding: 0.85rem 1rem; border-radius: 8px;
+      border: 1px solid var(--outline); background: rgba(255,255,255,0.02);
+      display: flex; align-items: center; gap: 0.65rem;
+    }
+    .flow-source__icon {
+      width: 28px; height: 28px; border-radius: 6px;
+      background: rgba(102,157,255,0.1);
+      display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+    }
+    .flow-source__icon svg { width: 14px; height: 14px; color: var(--blue); }
+    .flow-source__text { font-size: 0.85rem; color: var(--text-muted); }
+
+    /* Arrow column */
+    .flow-arrow {
+      display: flex; flex-direction: column; align-items: center;
+      justify-content: center; gap: 0; height: 100%;
+    }
+    .flow-arrow__line {
+      width: 2px; flex: 1; min-height: 20px;
+      background: linear-gradient(to bottom, rgba(102,157,255,0.0), rgba(102,157,255,0.3), rgba(102,157,255,0.0));
+    }
+    .flow-arrow__head {
+      width: 0; height: 0;
+      border-top: 6px solid rgba(102,157,255,0.4);
+      border-left: 5px solid transparent;
+      border-right: 5px solid transparent;
+    }
+
+    /* Center: AI Engine */
+    .flow-engine {
+      border: 1px solid rgba(102,157,255,0.3);
+      border-radius: 12px; padding: 1.5rem;
+      background: rgba(102,157,255,0.05);
+      text-align: center; position: relative; overflow: hidden;
+    }
+    .flow-engine::before {
+      content: '';
+      position: absolute; inset: 0; border-radius: inherit;
+      background: radial-gradient(circle at 50% 50%, rgba(102,157,255,0.08), transparent 70%);
+      pointer-events: none;
+    }
+    .flow-engine__icon {
+      width: 44px; height: 44px; border-radius: 50%;
+      background: rgba(102,157,255,0.15); border: 1px solid rgba(102,157,255,0.3);
+      display: flex; align-items: center; justify-content: center;
+      margin: 0 auto 0.75rem;
+    }
+    .flow-engine__icon svg { width: 20px; height: 20px; color: var(--blue); }
+    .flow-engine__title {
+      font-family: var(--font-display); font-weight: 700;
+      font-size: 0.9rem; color: var(--blue); margin-bottom: 0.35rem;
+    }
+    .flow-engine__sub { font-size: 0.75rem; color: var(--text-muted); line-height: 1.4; }
+
+    /* Output column */
+    .flow-output {
+      padding: 0.85rem 1rem; border-radius: 8px;
+      border: 1px solid rgba(143,245,255,0.15);
+      background: rgba(143,245,255,0.03);
+      display: flex; align-items: flex-start; gap: 0.65rem;
+    }
+    .flow-output__dot {
+      width: 8px; height: 8px; border-radius: 50%;
+      background: var(--cyan); flex-shrink: 0; margin-top: 0.3rem;
+    }
+    .flow-output__title {
+      font-family: var(--font-display); font-size: 0.83rem;
+      font-weight: 600; color: var(--text); margin-bottom: 0.2rem;
+    }
+    .flow-output__desc { font-size: 0.75rem; color: var(--text-muted); line-height: 1.45; }
+
+    /* Actions bar */
+    .flow-actions {
+      margin-top: 1.5rem; padding: 1.25rem 1.5rem;
+      border: 1px solid rgba(143,245,255,0.1);
+      border-radius: 10px; background: rgba(143,245,255,0.02);
+    }
+    .flow-actions__label {
+      font-size: 0.72rem; letter-spacing: 0.08em;
+      color: rgba(143,245,255,0.4); font-family: var(--font-display); font-weight: 600;
+      margin-bottom: 0.75rem;
+    }
+    .flow-actions__items { display: flex; flex-wrap: wrap; gap: 0.5rem; }
+    .action-chip {
+      padding: 0.35rem 0.8rem; border-radius: 20px; font-size: 0.78rem;
+      background: rgba(143,245,255,0.06); border: 1px solid rgba(143,245,255,0.12);
+      color: rgba(143,245,255,0.65); font-family: var(--font-display);
+      display: flex; align-items: center; gap: 0.4rem;
+    }
+    .action-chip::before {
+      content: '→';
+      font-size: 0.7rem; color: rgba(143,245,255,0.4);
+    }
+
+    /* ── SECTIONS ── */
+    .cap-section {
+      max-width: 860px; margin: 0 auto; padding: 4rem 2.5rem; opacity: 0;
+    }
+    .cap-section-label {
+      font-family: var(--font-display); font-size: 0.72rem;
+      letter-spacing: 0.1em; color: rgba(102,157,255,0.6); margin-bottom: 2.5rem;
+    }
+    .cap-points { display: flex; flex-direction: column; gap: 2.25rem; }
+    .cap-point { display: flex; gap: 1.75rem; align-items: flex-start; }
+    .cap-point__num {
+      font-family: var(--font-display); font-size: 0.7rem; font-weight: 700;
+      color: var(--blue); width: 28px; flex-shrink: 0; padding-top: 3px;
+    }
+    .cap-point h4 {
+      font-family: var(--font-display); font-size: 1.05rem;
+      font-weight: 600; color: var(--text); margin-bottom: 0.4rem;
+    }
+    .cap-point p { font-size: 0.9375rem; color: var(--text-muted); line-height: 1.7; }
+
+    .cap-outcomes-grid { display: flex; flex-wrap: wrap; gap: 0.6rem; }
+    .cap-outcome {
+      display: flex; align-items: center; gap: 0.5rem;
+      background: rgba(255,255,255,0.03); border: 1px solid var(--outline);
+      border-radius: 6px; padding: 0.55rem 1rem;
+      font-size: 0.85rem; color: var(--text-muted);
+    }
+    .cap-outcome svg { color: var(--blue); flex-shrink: 0; }
+
+    .divider { height: 1px; background: var(--outline); max-width: 860px; margin: 0 auto; }
+
+    .cap-cta-wrap {
+      text-align: center; max-width: 520px; margin: 0 auto;
+      padding: 5rem 2.5rem 7rem; opacity: 0;
+    }
+    .cap-cta-wrap h2 {
+      font-family: var(--font-display); font-size: clamp(1.8rem, 4vw, 2.6rem);
+      font-weight: 700; margin-bottom: 1rem;
+    }
+    .cap-cta-wrap p { color: var(--text-muted); margin-bottom: 2rem; }
+
+    @media (max-width: 680px) {
+      .flow { grid-template-columns: 1fr; grid-template-rows: auto auto auto; }
+      .flow-arrow { display: none; }
+    }
+  </style>
+</head>
+<body>
+
+  <nav class="cap-nav">
+    <a href="../index.html" class="cap-back">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="15 18 9 12 15 6"/></svg>
+      Axiom Systems
+    </a>
+    <span class="cap-badge">Capability 04</span>
+  </nav>
+
+  <section class="cap-hero">
+    <p class="label" style="color:rgba(102,157,255,0.6)">Customer Intelligence</p>
+    <h1 class="cap-title">Your data is<br>already telling<br><span style="background:linear-gradient(135deg,#669dff,#8ff5ff);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;">you everything.</span></h1>
+    <p class="cap-hook">Most businesses are sitting on a goldmine of customer data they never act on. We connect it, analyse it, and turn it into decisions that grow your revenue — automatically.</p>
+  </section>
+
+  <!-- VISUAL: DATA FLOW -->
+  <div class="cap-visual">
+    <div class="flow">
+
+      <!-- Sources -->
+      <div class="flow-col">
+        <div class="flow-source">
+          <div class="flow-source__icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="3" y="3" width="18" height="18" rx="2"/><line x1="3" y1="9" x2="21" y2="9"/><line x1="9" y1="21" x2="9" y2="9"/></svg>
+          </div>
+          <span class="flow-source__text">Website behaviour</span>
+        </div>
+        <div class="flow-source">
+          <div class="flow-source__icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/></svg>
+          </div>
+          <span class="flow-source__text">CRM &amp; sales data</span>
+        </div>
+        <div class="flow-source">
+          <div class="flow-source__icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/></svg>
+          </div>
+          <span class="flow-source__text">Email &amp; marketing</span>
+        </div>
+        <div class="flow-source">
+          <div class="flow-source__icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+          </div>
+          <span class="flow-source__text">Revenue &amp; transactions</span>
+        </div>
+      </div>
+
+      <!-- Arrow -->
+      <div class="flow-arrow">
+        <div class="flow-arrow__line"></div>
+        <div class="flow-arrow__head"></div>
+      </div>
+
+      <!-- AI Engine -->
+      <div class="flow-engine">
+        <div class="flow-engine__icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 7V5a2 2 0 0 0-4 0v2"/><line x1="12" y1="12" x2="12" y2="16"/><line x1="10" y1="14" x2="14" y2="14"/></svg>
+        </div>
+        <div class="flow-engine__title">AI Analysis</div>
+        <div class="flow-engine__sub">Finds patterns humans miss across thousands of data points</div>
+      </div>
+
+      <!-- Arrow -->
+      <div class="flow-arrow">
+        <div class="flow-arrow__line"></div>
+        <div class="flow-arrow__head"></div>
+      </div>
+
+      <!-- Outputs -->
+      <div class="flow-col">
+        <div class="flow-output">
+          <div class="flow-output__dot"></div>
+          <div>
+            <div class="flow-output__title">Who will buy next</div>
+            <div class="flow-output__desc">Ranked lead scores based on behaviour patterns</div>
+          </div>
+        </div>
+        <div class="flow-output">
+          <div class="flow-output__dot"></div>
+          <div>
+            <div class="flow-output__title">Who is about to leave</div>
+            <div class="flow-output__desc">Churn signals detected weeks before it happens</div>
+          </div>
+        </div>
+        <div class="flow-output">
+          <div class="flow-output__dot"></div>
+          <div>
+            <div class="flow-output__title">Where revenue is leaking</div>
+            <div class="flow-output__desc">Drop-off points, underperforming segments, missed upsells</div>
+          </div>
+        </div>
+        <div class="flow-output">
+          <div class="flow-output__dot"></div>
+          <div>
+            <div class="flow-output__title">What to do next</div>
+            <div class="flow-output__desc">Automated actions triggered the moment a signal appears</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Automated actions -->
+    <div class="flow-actions">
+      <div class="flow-actions__label">AUTOMATED ACTIONS TRIGGERED BY INSIGHTS</div>
+      <div class="flow-actions__items">
+        <span class="action-chip">Win-back email to at-risk customer</span>
+        <span class="action-chip">Sales team alerted on hot lead</span>
+        <span class="action-chip">Upsell offer triggered on purchase pattern</span>
+        <span class="action-chip">Weekly revenue report delivered</span>
+        <span class="action-chip">CRM stage updated automatically</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="divider"></div>
+
+  <section class="cap-section">
+    <p class="cap-section-label">How it works</p>
+    <div class="cap-points">
+      <div class="cap-point">
+        <span class="cap-point__num">01</span>
+        <div>
+          <h4>We connect your data sources</h4>
+          <p>Your CRM, website analytics, email platform, and sales data are all talking — but not to each other. We connect them into a single, unified view of your customers and their behaviour.</p>
+        </div>
+      </div>
+      <div class="cap-point">
+        <span class="cap-point__num">02</span>
+        <div>
+          <h4>AI surfaces what matters</h4>
+          <p>Patterns in thousands of data points that no human would spot manually — who's about to churn, which leads are genuinely hot, which products customers buy together. We surface it clearly.</p>
+        </div>
+      </div>
+      <div class="cap-point">
+        <span class="cap-point__num">03</span>
+        <div>
+          <h4>Automated actions — no manual work needed</h4>
+          <p>The moment an insight appears, an action triggers. A lead heats up — your sales team is notified. A customer shows churn signals — a re-engagement email goes out automatically. The intelligence acts for you.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div class="divider"></div>
+
+  <section class="cap-section">
+    <p class="cap-section-label">What you get</p>
+    <div class="cap-outcomes-grid">
+      <div class="cap-outcome"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polyline points="20 6 9 17 4 12"/></svg>Customer segmentation &amp; profiling</div>
+      <div class="cap-outcome"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polyline points="20 6 9 17 4 12"/></svg>Churn prediction alerts</div>
+      <div class="cap-outcome"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polyline points="20 6 9 17 4 12"/></svg>Lead scoring &amp; prioritisation</div>
+      <div class="cap-outcome"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polyline points="20 6 9 17 4 12"/></svg>Revenue analytics dashboard</div>
+      <div class="cap-outcome"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polyline points="20 6 9 17 4 12"/></svg>Automated CRM workflows</div>
+      <div class="cap-outcome"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polyline points="20 6 9 17 4 12"/></svg>Weekly intelligence reports</div>
+    </div>
+  </section>
+
+  <div class="cap-cta-wrap">
+    <h2>Know your<br>customers better<br>than they know themselves.</h2>
+    <p>Tell us what data you have and we'll show you what's hiding in it.</p>
+    <a href="../index.html#contact" class="btn">Book a Call</a>
+  </div>
+
+  <script src="https://unpkg.com/lenis@1.1.20/dist/lenis.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+  <script>
+    const lenis = new Lenis({ duration: 1.2, smooth: true, smoothTouch: false })
+    gsap.registerPlugin(ScrollTrigger)
+    lenis.on('scroll', ScrollTrigger.update)
+    gsap.ticker.add(t => lenis.raf(t * 1000))
+    gsap.ticker.lagSmoothing(0, 0)
+
+    gsap.to('.cap-hero', { opacity: 1, y: 0, duration: 0.9, ease: 'power3.out', delay: 0.1 })
+    gsap.to('.cap-visual', { opacity: 1, duration: 0.8, ease: 'power2.out', delay: 0.3 })
+
+    gsap.utils.toArray('.cap-section').forEach(el => {
+      gsap.to(el, { opacity: 1, duration: 0.7, ease: 'power3.out',
+        scrollTrigger: { trigger: el, start: 'top 84%' }
+      })
+    })
+    gsap.to('.cap-cta-wrap', { opacity: 1, duration: 0.7,
+      scrollTrigger: { trigger: '.cap-cta-wrap', start: 'top 85%' }
+    })
+  </script>
+</body>
+</html>
