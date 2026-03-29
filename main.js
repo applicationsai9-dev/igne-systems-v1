@@ -43,7 +43,35 @@ document.addEventListener('DOMContentLoaded', () => {
   initWork()
   initSectionHeads()
   initCTA()
+  initFAQReveal()
+  initFAQ()
+  initContactForm()
+  initMarquee()
 })
+
+// ========================
+// FAQ SCROLL REVEAL
+// ========================
+function initFAQReveal() {
+  if (prefersReducedMotion) {
+    gsap.set('.faq-item', { opacity: 1 })
+    return
+  }
+  gsap.fromTo('.faq-item',
+    { y: 24, opacity: 0 },
+    {
+      y: 0,
+      opacity: 1,
+      duration: 0.6,
+      stagger: 0.08,
+      ease: 'power3.out',
+      scrollTrigger: {
+        trigger: '.faq__list',
+        start: 'top 85%',
+      }
+    }
+  )
+}
 
 // ========================
 // SMOOTH ANCHOR NAVIGATION
@@ -453,7 +481,8 @@ function initRobot() {
       const dist  = Math.min(Math.hypot(dx, dy), MAX_TRAVEL)
 
       gsap.to(el, {
-        attr: { cx: bx + Math.cos(angle) * dist, cy: by + Math.sin(angle) * dist },
+        x: Math.cos(angle) * dist,
+        y: Math.sin(angle) * dist,
         duration: 0.25,
         ease: 'power2.out',
         overwrite: 'auto',
@@ -462,10 +491,20 @@ function initRobot() {
   })
 
   document.addEventListener('mouseleave', () => {
-    eyes.forEach(({ el, bx, by }) => {
-      gsap.to(el, { attr: { cx: bx, cy: by }, duration: 0.6, ease: 'elastic.out(1,0.5)' })
+    eyes.forEach(({ el }) => {
+      gsap.to(el, { x: 0, y: 0, duration: 0.6, ease: 'elastic.out(1,0.5)' })
     })
   })
+}
+
+// ========================
+// MARQUEE (pure CSS — JS only needed for reduced motion)
+// ========================
+function initMarquee() {
+  if (prefersReducedMotion) {
+    const track = document.querySelector('.marquee-track')
+    if (track) track.style.animation = 'none'
+  }
 }
 
 // ========================
@@ -493,20 +532,61 @@ function initCTA() {
 }
 
 // ========================
-// FORM SUBMIT HANDLER
+// CONTACT FORM — Formspree
 // ========================
-function handleFormSubmit(e) {
-  e.preventDefault()
-  const btn = e.target.querySelector('button')
-  const input = e.target.querySelector('input')
-  const original = btn.textContent
+function initContactForm() {
+  const form = document.getElementById('contactForm')
+  if (!form) return
 
-  btn.textContent = 'Sent!'
-  btn.style.background = 'linear-gradient(135deg, #00deec, #00a86b)'
-  input.value = ''
+  form.addEventListener('submit', async e => {
+    e.preventDefault()
+    const btn = document.getElementById('submitBtn')
+    const success = document.getElementById('formSuccess')
 
-  setTimeout(() => {
-    btn.textContent = original
-    btn.style.background = ''
-  }, 3000)
+    btn.textContent = 'Sending...'
+    btn.disabled = true
+
+    try {
+      const res = await fetch(form.action, {
+        method: 'POST',
+        body: new FormData(form),
+        headers: { Accept: 'application/json' },
+      })
+
+      if (res.ok) {
+        form.style.display = 'none'
+        success.classList.add('cta__success--show')
+      } else {
+        btn.textContent = 'Something went wrong — try again'
+        btn.disabled = false
+      }
+    } catch {
+      btn.textContent = 'Something went wrong — try again'
+      btn.disabled = false
+    }
+  })
+}
+
+// ========================
+// FAQ ACCORDION
+// ========================
+function initFAQ() {
+  document.querySelectorAll('.faq-item__q').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const item = btn.closest('.faq-item')
+      const isOpen = item.classList.contains('faq-item--open')
+
+      // Close all
+      document.querySelectorAll('.faq-item--open').forEach(el => {
+        el.classList.remove('faq-item--open')
+        el.querySelector('.faq-item__q').setAttribute('aria-expanded', 'false')
+      })
+
+      // Open clicked (unless it was already open)
+      if (!isOpen) {
+        item.classList.add('faq-item--open')
+        btn.setAttribute('aria-expanded', 'true')
+      }
+    })
+  })
 }
